@@ -43,10 +43,12 @@ const ProtectedRoute = ({ children }) => {
 };
 
 function App() {
-  const { isDark } = useTheme();
+  const { isDark, isMhdc } = useTheme();
+
+  const textClass = isDark ? 'text-slate-100' : isMhdc ? 'text-[#323232]' : 'text-slate-950';
 
   return (
-    <div className={`relative min-h-screen overflow-hidden ${isDark ? 'text-slate-100' : 'text-slate-950'}`}>
+    <div className={`relative min-h-screen overflow-hidden ${textClass}`}>
       <AnimatedBackground />
       <div className="relative z-10 min-h-screen">
         <GlobalHeader />

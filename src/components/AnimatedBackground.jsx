@@ -5,13 +5,21 @@ import { useTheme } from '../context/ThemeContext';
 
 const AnimatedBackground = () => {
   const mountRef = useRef(null);
-  const { isDark } = useTheme();
+  const { isDark, isMhdc } = useTheme();
   const location = useLocation();
   const isWorkflowPage = location.pathname.startsWith('/application/');
   const isDashboardPage = location.pathname === '/dashboard';
-  const particleOpacity = isDashboardPage ? (isDark ? 0.75 : 0.35) : isWorkflowPage ? (isDark ? 0.35 : 0.18) : (isDark ? 0.5 : 0.24);
-  const coreOpacity = isDashboardPage ? (isDark ? 0.32 : 0.18) : isWorkflowPage ? (isDark ? 0.16 : 0.08) : (isDark ? 0.22 : 0.12);
-  const haloOpacity = isDashboardPage ? (isDark ? 0.28 : 0.16) : isWorkflowPage ? (isDark ? 0.12 : 0.07) : (isDark ? 0.18 : 0.1);
+
+  // MHDC theme uses lower opacities because the maroon background is already rich
+  const particleOpacity = isMhdc
+    ? (isDashboardPage ? 0.28 : isWorkflowPage ? 0.14 : 0.2)
+    : isDashboardPage ? (isDark ? 0.75 : 0.35) : isWorkflowPage ? (isDark ? 0.35 : 0.18) : (isDark ? 0.5 : 0.24);
+  const coreOpacity = isMhdc
+    ? (isDashboardPage ? 0.14 : isWorkflowPage ? 0.06 : 0.1)
+    : isDashboardPage ? (isDark ? 0.32 : 0.18) : isWorkflowPage ? (isDark ? 0.16 : 0.08) : (isDark ? 0.22 : 0.12);
+  const haloOpacity = isMhdc
+    ? (isDashboardPage ? 0.12 : isWorkflowPage ? 0.05 : 0.08)
+    : isDashboardPage ? (isDark ? 0.28 : 0.16) : isWorkflowPage ? (isDark ? 0.12 : 0.07) : (isDark ? 0.18 : 0.1);
 
   useEffect(() => {
     const mount = mountRef.current;
@@ -33,7 +41,7 @@ const AnimatedBackground = () => {
 
     const coreGeometry = new THREE.IcosahedronGeometry(2.4, 1);
     const coreMaterial = new THREE.MeshBasicMaterial({
-      color: isDark ? 0x7dd3fc : 0x2563eb,
+      color: isMhdc ? 0xff5c00 : isDark ? 0x7dd3fc : 0x2563eb,
       wireframe: true,
       transparent: true,
       opacity: coreOpacity,
@@ -43,7 +51,7 @@ const AnimatedBackground = () => {
 
     const haloGeometry = new THREE.TorusGeometry(3.8, 0.04, 16, 160);
     const haloMaterial = new THREE.MeshBasicMaterial({
-      color: isDark ? 0xf9a8d4 : 0x7c3aed,
+      color: isMhdc ? 0xd4380d : isDark ? 0xf9a8d4 : 0x7c3aed,
       transparent: true,
       opacity: haloOpacity,
     });
@@ -63,7 +71,7 @@ const AnimatedBackground = () => {
     const particlesGeometry = new THREE.BufferGeometry();
     particlesGeometry.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
     const particlesMaterial = new THREE.PointsMaterial({
-      color: isDark ? 0xffffff : 0x1e293b,
+      color: isMhdc ? 0xffffff : isDark ? 0xffffff : 0x1e293b,
       size: 0.04,
       transparent: true,
       opacity: particleOpacity,
@@ -118,16 +126,48 @@ const AnimatedBackground = () => {
       particlesMaterial.dispose();
       renderer.dispose();
     };
-  }, [coreOpacity, haloOpacity, isDark, particleOpacity]);
+  }, [coreOpacity, haloOpacity, isDark, isMhdc, particleOpacity]);
+
+  const getSkylineClasses = () => {
+    if (isMhdc) return { back: 'skyline-mhdc', front: 'skyline-mhdc-front' };
+    if (isDark) return { back: 'skyline-dark', front: 'skyline-dark-front' };
+    return { back: 'skyline-light', front: 'skyline-light-front' };
+  };
+
+  const skyline = getSkylineClasses();
+
+  const getBackgroundGradient = () => {
+    if (isMhdc) {
+      return 'bg-[radial-gradient(circle_at_top,_rgba(255,92,0,0.16),_transparent_36%),radial-gradient(circle_at_bottom_right,_rgba(150,40,27,0.14),_transparent_28%),linear-gradient(160deg,_#5c1610_0%,_#7a1f14_45%,_#96281b_100%)]';
+    }
+    if (isDark) {
+      return 'bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.24),_transparent_36%),radial-gradient(circle_at_bottom_right,_rgba(244,114,182,0.22),_transparent_28%),linear-gradient(160deg,_#020617_0%,_#0f172a_45%,_#172554_100%)]';
+    }
+    return 'bg-[radial-gradient(circle_at_top_left,_rgba(59,130,246,0.18),_transparent_32%),radial-gradient(circle_at_bottom_right,_rgba(236,72,153,0.16),_transparent_24%),linear-gradient(160deg,_#e9f1ff_0%,_#dfeafe_52%,_#d3e1fb_100%)]';
+  };
+
+  const getOverlayGradient = () => {
+    if (isMhdc) {
+      return isWorkflowPage
+        ? 'bg-[linear-gradient(180deg,_rgba(92,22,16,0.32)_0%,_rgba(92,22,16,0.48)_100%)]'
+        : 'bg-[linear-gradient(180deg,_rgba(92,22,16,0.12)_0%,_rgba(92,22,16,0.36)_100%)]';
+    }
+    if (isDark) {
+      return isWorkflowPage
+        ? 'bg-[linear-gradient(180deg,_rgba(2,6,23,0.42)_0%,_rgba(2,6,23,0.56)_100%)]'
+        : 'bg-[linear-gradient(180deg,_rgba(2,6,23,0.18)_0%,_rgba(2,6,23,0.44)_100%)]';
+    }
+    return isWorkflowPage
+      ? 'bg-[linear-gradient(180deg,_rgba(255,255,255,0.18)_0%,_rgba(203,213,225,0.34)_100%)]'
+      : 'bg-[linear-gradient(180deg,_rgba(255,255,255,0.04)_0%,_rgba(203,213,225,0.2)_100%)]';
+  };
 
   return (
     <div className="pointer-events-none fixed inset-0">
-      <div className={`absolute inset-0 ${isDark
-        ? 'bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.24),_transparent_36%),radial-gradient(circle_at_bottom_right,_rgba(244,114,182,0.22),_transparent_28%),linear-gradient(160deg,_#020617_0%,_#0f172a_45%,_#172554_100%)]'
-        : 'bg-[radial-gradient(circle_at_top_left,_rgba(59,130,246,0.18),_transparent_32%),radial-gradient(circle_at_bottom_right,_rgba(236,72,153,0.16),_transparent_24%),linear-gradient(160deg,_#e9f1ff_0%,_#dfeafe_52%,_#d3e1fb_100%)]'}`} />
+      <div className={`absolute inset-0 ${getBackgroundGradient()}`} />
       <div ref={mountRef} className={`absolute inset-0 ${isWorkflowPage ? 'opacity-55' : 'opacity-90'}`} />
-      <div className={`skyline-wrap absolute inset-x-0 bottom-0 ${isDark ? 'opacity-60' : 'opacity-95'}`}>
-        <div className={`skyline skyline-back ${isDark ? 'skyline-dark' : 'skyline-light'}`}>
+      <div className={`skyline-wrap absolute inset-x-0 bottom-0 ${isMhdc ? 'opacity-70' : isDark ? 'opacity-60' : 'opacity-95'}`}>
+        <div className={`skyline skyline-back ${skyline.back}`}>
           <span style={{ '--w': '7%', '--h': '22%', '--x': '0%' }} />
           <span style={{ '--w': '10%', '--h': '28%', '--x': '7%' }} />
           <span style={{ '--w': '8%', '--h': '18%', '--x': '17%' }} />
@@ -139,7 +179,7 @@ const AnimatedBackground = () => {
           <span style={{ '--w': '8%', '--h': '25%', '--x': '77%' }} />
           <span style={{ '--w': '15%', '--h': '32%', '--x': '85%' }} />
         </div>
-        <div className={`skyline skyline-front ${isDark ? 'skyline-dark-front' : 'skyline-light-front'}`}>
+        <div className={`skyline skyline-front ${skyline.front}`}>
           <span style={{ '--w': '9%', '--h': '30%', '--x': '2%' }} />
           <span style={{ '--w': '6%', '--h': '18%', '--x': '12%' }} />
           <span style={{ '--w': '11%', '--h': '40%', '--x': '20%' }} />
@@ -151,13 +191,7 @@ const AnimatedBackground = () => {
           <span style={{ '--w': '10%', '--h': '26%', '--x': '87%' }} />
         </div>
       </div>
-      <div className={`absolute inset-0 ${isDark
-        ? isWorkflowPage
-          ? 'bg-[linear-gradient(180deg,_rgba(2,6,23,0.42)_0%,_rgba(2,6,23,0.56)_100%)]'
-          : 'bg-[linear-gradient(180deg,_rgba(2,6,23,0.18)_0%,_rgba(2,6,23,0.44)_100%)]'
-        : isWorkflowPage
-          ? 'bg-[linear-gradient(180deg,_rgba(255,255,255,0.18)_0%,_rgba(203,213,225,0.34)_100%)]'
-          : 'bg-[linear-gradient(180deg,_rgba(255,255,255,0.04)_0%,_rgba(203,213,225,0.2)_100%)]'}`} />
+      <div className={`absolute inset-0 ${getOverlayGradient()}`} />
     </div>
   );
 };
