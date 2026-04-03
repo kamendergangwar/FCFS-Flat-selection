@@ -46,13 +46,13 @@ const GlobalHeader = () => {
 
   return (
     <header className="relative z-30 px-4 py-4 sm:px-6 lg:px-8">
-      <div className="flex w-full items-center justify-between gap-4">
-        <div className="header-logo-wrap flex items-center px-1 py-1">
+      <div className="flex w-full flex-col gap-3 sm:gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div className="header-logo-wrap flex items-center self-start px-1 py-1 lg:self-auto">
           <HeaderLogoScene />
           <img src={logoSrc} alt="MHDC logo" className="header-logo" />
         </div>
 
-        <div className="header-card flex items-center gap-3 rounded-full px-4 py-3 text-sm">
+        <div className="header-card flex w-full flex-wrap items-center justify-center gap-2 rounded-[1.5rem] px-3 py-3 text-sm sm:justify-end sm:gap-3 sm:rounded-full sm:px-4 lg:w-auto">
           <button
             type="button"
             onClick={toggleTheme}
@@ -81,10 +81,10 @@ const GlobalHeader = () => {
             <span className="hidden sm:inline">Help</span>
           </button>
           {isAuthenticated ? (
-            <div className="header-account-menu" ref={accountMenuRef}>
+            <div className="header-account-menu w-full sm:w-auto" ref={accountMenuRef}>
               <button
                 type="button"
-                className="header-button header-button-account"
+                className="header-button header-button-account w-full justify-center sm:w-auto"
                 onClick={() => setIsAccountOpen((open) => !open)}
                 aria-haspopup="menu"
                 aria-expanded={isAccountOpen}

@@ -152,9 +152,9 @@ const Login = () => {
   };
 
   return (
-    <div className="content-frame page-enter mx-auto flex min-h-[calc(100vh-7rem)] max-w-6xl items-center justify-center p-4">
-      <div className="grid w-full gap-6 lg:grid-cols-[1.05fr_0.95fr]">
-        <section className="login-side-panel hidden rounded-[2.25rem] p-8 lg:block">
+    <div className="content-frame page-enter mx-auto flex min-h-[calc(100vh-7rem)] max-w-6xl items-center justify-center p-3 sm:p-4">
+      <div className="grid w-full gap-4 sm:gap-6 lg:grid-cols-[1.05fr_0.95fr]">
+        <section className="login-side-panel hidden rounded-[2rem] p-6 xl:block xl:p-8">
           <p className="step-eyebrow">Priority Access</p>
           <h1 className="text-3xl font-black tracking-tight step-heading">Explore homes and complete your booking in one guided flow.</h1>
           <p className="mt-4 max-w-xl text-base leading-7 step-subtle">
@@ -212,8 +212,8 @@ const Login = () => {
 
         </section>
 
-        <section className="login-card w-full rounded-[2.25rem] p-8 shadow-[0_32px_90px_rgba(15,23,42,0.16)]">
-          <div className="mb-8 text-center">
+        <section className="login-card w-full rounded-[1.75rem] p-5 shadow-[0_32px_90px_rgba(15,23,42,0.16)] sm:rounded-[2.25rem] sm:p-8">
+          <div className="mb-6 text-center sm:mb-8">
             <img src={logoSrc} alt="MHDC logo" className="login-brand-logo mx-auto mb-4" />
             <p className="mt-2 text-slate-500">
               {step === 'mobile' ? 'Enter your mobile number to continue' : 'Enter the OTP sent to your mobile'}
@@ -279,7 +279,7 @@ const Login = () => {
                   value={otp}
                   onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
                   placeholder="6-digit OTP"
-                  className="w-full rounded-2xl border border-gray-300 px-4 py-4 text-center text-2xl tracking-[0.45em] transition-all"
+                  className="w-full rounded-2xl border border-gray-300 px-3 py-4 text-center text-xl tracking-[0.28em] transition-all sm:px-4 sm:text-2xl sm:tracking-[0.45em]"
                   autoFocus
                 />
                 <p className="mt-3 text-center text-sm text-gray-500">

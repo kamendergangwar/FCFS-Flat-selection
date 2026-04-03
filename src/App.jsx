@@ -50,7 +50,7 @@ function App() {
       <AnimatedBackground />
       <div className="relative z-10 min-h-screen">
         <GlobalHeader />
-        <main className="px-4 pb-8 pt-2 sm:px-6 lg:px-8">
+        <main className="px-3 pb-6 pt-1 sm:px-5 sm:pb-8 sm:pt-2 lg:px-8">
           <Routes>
             <Route path="/login" element={<Login />} />
 

@@ -205,7 +205,7 @@ const Dashboard = () => {
   const activeRoute = flatSteps.find((step) => !step.done)?.route || '/dashboard';
 
   return (
-    <div className="page-enter w-full px-2 pb-10 sm:px-4">
+    <div className="page-enter w-full px-1 pb-8 sm:px-4 sm:pb-10">
       <section className="dashboard-board">
         <div className="dashboard-board__header">
           <div>

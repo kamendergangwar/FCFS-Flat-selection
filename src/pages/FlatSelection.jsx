@@ -253,12 +253,12 @@ const FlatSelection = () => {
 
             {/* ═══════ MAP SECTION ═══════ */}
             <section className={sectionCls}>
-              <div className={`flex items-center justify-between gap-3 border-b px-5 py-3.5 ${isDark ? 'border-slate-700/60' : 'border-slate-200/80'}`}>
+              <div className={`flex flex-col gap-3 border-b px-4 py-3.5 sm:flex-row sm:items-center sm:justify-between sm:px-5 ${isDark ? 'border-slate-700/60' : 'border-slate-200/80'}`}>
                 <div className="flex items-center gap-3">
                   <MapPin className={`h-4 w-4 ${isDark ? 'text-cyan-400' : 'text-sky-500'}`} />
                   <h3 className={`text-base font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>Choose Project</h3>
                 </div>
-                <div className={`flex items-center gap-3 text-[10px] font-semibold ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                <div className={`flex flex-wrap items-center gap-3 text-[10px] font-semibold ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                   <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-emerald-500" />Open</span>
                   <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-blue-500" />Held</span>
                   <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-rose-500" />Sold</span>
@@ -294,9 +294,9 @@ const FlatSelection = () => {
 
             {/* ═══════ UNIFIED SELECTION PANEL ═══════ */}
             <section className={sectionCls}>
-              <div className={`flex flex-wrap items-center justify-between gap-3 border-b px-5 py-3.5 ${isDark ? 'border-slate-700/60' : 'border-slate-200/80'}`}>
+              <div className={`flex flex-col gap-3 border-b px-4 py-3.5 sm:px-5 lg:flex-row lg:items-center lg:justify-between ${isDark ? 'border-slate-700/60' : 'border-slate-200/80'}`}>
                 <h3 className={`text-base font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>Select Your Unit</h3>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                   {[
                     { label: selBuilding.name.replace('Building ', ''), step: '1', done: true },
                     { label: `Floor ${selFloorData.number}`, step: '2', done: true },
@@ -315,14 +315,14 @@ const FlatSelection = () => {
                 </div>
               </div>
 
-              <div className="space-y-4 p-5">
+              <div className="space-y-4 p-4 sm:p-5">
                 {/* Building Selection */}
                 <div>
                   <div className="mb-2 flex items-center gap-2">
                     <Building2 className={`h-3.5 w-3.5 ${isDark ? 'text-blue-400' : 'text-blue-500'}`} />
                     <span className={`text-xs font-semibold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Building</span>
                   </div>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 xl:flex xl:flex-wrap">
                     {selProject.buildings.map((b) => {
                       const avail = b.floors.flatMap((f) => f.flats).filter((u) => u.status === 'available').length;
                       const active = b.id === selBuilding.id;
@@ -348,7 +348,7 @@ const FlatSelection = () => {
                     <Layers3 className={`h-3.5 w-3.5 ${isDark ? 'text-emerald-400' : 'text-emerald-500'}`} />
                     <span className={`text-xs font-semibold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Floor</span>
                   </div>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="grid grid-cols-3 gap-2 sm:flex sm:flex-wrap">
                     {filteredFloors.map((f) => {
                       const avail = f.flats.filter((u) => u.status === 'available').length;
                       const active = f.number === selFloorData.number;
@@ -371,7 +371,7 @@ const FlatSelection = () => {
                 {/* Filters Row */}
                 <div>
                   <button type="button" onClick={() => setShowFilters(!showFilters)}
-                    className={`inline-flex items-center gap-2 rounded-lg border px-3 py-1.5 text-xs font-semibold transition-colors ${
+                    className={`inline-flex w-full items-center justify-center gap-2 rounded-lg border px-3 py-1.5 text-xs font-semibold transition-colors sm:w-auto ${
                       isDark ? 'border-slate-700/60 bg-slate-900/60 text-slate-300 hover:border-slate-500' : 'border-slate-200 bg-slate-50 text-slate-600 hover:border-slate-300'
                     }`}
                   >
@@ -380,7 +380,7 @@ const FlatSelection = () => {
                   </button>
                   <div className={`grid transition-all duration-300 ${showFilters ? 'mt-3 grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
                     <div className="overflow-hidden">
-                      <div className="grid gap-3 sm:grid-cols-3">
+                      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
                         <div className={cardCls + ' p-3'}>
                           <div className="flex items-center justify-between">
                             <span className={`text-xs font-semibold ${isDark ? 'text-slate-200' : 'text-slate-700'}`}><IndianRupee className="mr-1 inline h-3 w-3" />Budget</span>
@@ -413,14 +413,14 @@ const FlatSelection = () => {
 
                 {/* Floor Plan + Unit Cards */}
                 <div className={`rounded-2xl border p-4 ${isDark ? 'border-slate-700/50 bg-slate-950/50' : 'border-slate-200/80 bg-slate-50/60'}`}>
-                  <div className="mb-3 flex items-center justify-between">
+                  <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div className="flex items-center gap-2">
                       <Home className={`h-3.5 w-3.5 ${isDark ? 'text-cyan-400' : 'text-sky-500'}`} />
                       <span className={`text-sm font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
                         Floor {selFloorData.number} — {selBuilding.name.replace('Building ', '')} Tower
                       </span>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center justify-between gap-2 sm:justify-end">
                       <span className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>{filteredFlats.length} units</span>
                       <button type="button" onClick={() => setShowExpandedPlan(true)}
                         className={`rounded-lg border p-1.5 transition-colors ${isDark ? 'border-slate-700/60 bg-slate-900 text-slate-300 hover:border-slate-500' : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'}`}>
@@ -436,7 +436,7 @@ const FlatSelection = () => {
                     </div>
 
                     {/* Unit Cards Grid */}
-                    <div className="grid gap-2 sm:grid-cols-2 content-start">
+                    <div className="grid content-start gap-2 sm:grid-cols-2">
                       {filteredFlats.map((flat) => {
                         const isSel = flat.id === selFlatId;
                         const tone = getStatusTone(flat.status, isSel);
@@ -527,7 +527,7 @@ const FlatSelection = () => {
                         <p className={`text-xl font-black ${isDark ? 'text-white' : 'text-slate-900'}`}>{selFlat.id}</p>
                         <p className={`mt-0.5 text-xs ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>{selFlat.type} · {selFlat.area} sq.ft · {selFlat.facing}</p>
                       </div>
-                      <div className="grid grid-cols-2 gap-2">
+                      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                         <div className={`rounded-lg p-2.5 ${isDark ? 'bg-slate-950/40' : 'bg-slate-100'}`}>
                           <p className={labelCls}>Price</p>
                           <p className={`mt-0.5 flex items-center gap-0.5 text-base font-black ${isDark ? 'text-white' : 'text-slate-900'}`}>
