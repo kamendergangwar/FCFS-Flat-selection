@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import ApplicationLayout from '../components/ApplicationLayout';
 import { FolderOpen, Upload, CheckCircle, AlertCircle, FileText, Image } from 'lucide-react';
 
@@ -13,6 +14,7 @@ const getDocumentLabel = (documentValue) => {
 const Documents = () => {
   const navigate = useNavigate();
   const { applicationData, updateApplicationData } = useAuth();
+  const { t } = useLanguage();
   
   const [documents, setDocuments] = useState(applicationData.documents || {
     photo: null,
@@ -70,7 +72,7 @@ const Documents = () => {
     const missingDocs = requiredDocs.filter(d => !documents[d.key]);
     
     if (missingDocs.length > 0) {
-      alert('Please upload all required documents');
+      alert(t('Please upload all required documents'));
       return;
     }
 
@@ -84,13 +86,13 @@ const Documents = () => {
   };
 
   return (
-    <ApplicationLayout stepNumber={8} title="Upload Documents" onContinue={handleSubmit}>
+    <ApplicationLayout stepNumber={8} title={t('Upload Documents')} onContinue={handleSubmit}>
       <div className="space-y-6">
         <div className="step-info-panel flex items-start gap-3">
           <AlertCircle className="w-5 h-5 text-blue-600 mt-0.5" />
           <div>
-            <p className="font-medium text-blue-800">Document Requirements</p>
-            <p className="text-sm text-blue-700">Upload clear, legible copies of all required documents. Max file size: 5MB. Supported formats: JPG, PNG, PDF.</p>
+            <p className="font-medium text-blue-800">{t('Document Requirements')}</p>
+            <p className="text-sm text-blue-700">{t('Upload clear, legible copies of all required documents. Max file size: 5MB. Supported formats: JPG, PNG, PDF.')}</p>
           </div>
         </div>
 
@@ -112,7 +114,7 @@ const Documents = () => {
                     <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100">
                       <Icon className="w-5 h-5 text-gray-400" />
                     </div>
-                    <span className="font-medium text-gray-900">{doc.label}</span>
+                    <span className="font-medium text-gray-900">{t(doc.label)}</span>
                     {doc.required && <span className="text-red-500">*</span>}
                   </div>
                   {isUploaded && <CheckCircle className="w-5 h-5 text-green-600" />}
@@ -127,17 +129,17 @@ const Documents = () => {
                     disabled={isUploading}
                   />
                   {isUploading ? (
-                    <span className="text-gray-500">Uploading...</span>
+                    <span className="text-gray-500">{t('Uploading...')}</span>
                   ) : isUploaded ? (
                     <>
-                      <span className="text-green-600 text-sm font-semibold">Uploaded successfully</span>
+                      <span className="text-green-600 text-sm font-semibold">{t('Uploaded successfully')}</span>
                       <span className="text-sm truncate text-gray-500">{getDocumentLabel(documents[doc.key])}</span>
                     </>
                   ) : (
                     <>
                       <Upload className="w-5 h-5 text-gray-400" />
-                      <span className="text-gray-500">Click to upload</span>
-                      <span className="text-xs text-gray-400">JPG, PNG, PDF up to 5MB</span>
+                      <span className="text-gray-500">{t('Click to upload')}</span>
+                      <span className="text-xs text-gray-400">{t('JPG, PNG, PDF up to 5MB')}</span>
                     </>
                   )}
                 </label>

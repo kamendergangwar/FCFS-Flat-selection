@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import ApplicationLayout from '../components/ApplicationLayout';
 import { CreditCard, CheckCircle, Lock, AlertCircle } from 'lucide-react';
 
 const EMDPayment = () => {
   const navigate = useNavigate();
   const { applicationData, updateApplicationData } = useAuth();
+  const { t, formatNumber } = useLanguage();
   
   const [paymentMethod, setPaymentMethod] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
@@ -16,7 +18,7 @@ const EMDPayment = () => {
 
   const handlePayment = async () => {
     if (!paymentMethod) {
-      alert('Please select a payment method');
+      alert(t('Please select a payment method'));
       return;
     }
 
@@ -39,32 +41,32 @@ const EMDPayment = () => {
   };
 
   const paymentMethods = [
-    { id: 'netbanking', name: 'Net Banking', icon: CreditCard },
-    { id: 'debitcard', name: 'Debit Card', icon: CreditCard },
-    { id: 'creditcard', name: 'Credit Card', icon: CreditCard },
+    { id: 'netbanking', name: t('Net Banking'), icon: CreditCard },
+    { id: 'debitcard', name: t('Debit Card'), icon: CreditCard },
+    { id: 'creditcard', name: t('Credit Card'), icon: CreditCard },
     { id: 'upi', name: 'UPI', icon: CreditCard },
   ];
 
   return (
-    <ApplicationLayout stepNumber={10} title="EMD Payment">
+    <ApplicationLayout stepNumber={10} title={t('EMD Payment')}>
       <div className="space-y-6">
         <div className="step-info-panel flex items-start gap-3">
           <AlertCircle className="w-5 h-5 text-blue-600 mt-0.5" />
           <div>
-            <p className="font-medium text-blue-800">Earnest Money Deposit (EMD)</p>
-            <p className="text-sm text-blue-700">Pay ₹{emdAmount.toLocaleString()} to proceed with flat selection. This amount will be adjusted in the final payment.</p>
+            <p className="font-medium text-blue-800">{t('Earnest Money Deposit (EMD)')}</p>
+            <p className="text-sm text-blue-700">{t('Pay ₹{amount} to proceed with flat selection. This amount will be adjusted in the final payment.', { amount: formatNumber(emdAmount) })}</p>
           </div>
         </div>
 
         {!paymentSuccess ? (
           <>
             <div className="step-note rounded-2xl p-6 text-center">
-              <p className="text-gray-500 mb-2">EMD Amount</p>
-              <p className="text-4xl font-bold text-gray-900">₹{emdAmount.toLocaleString()}</p>
+              <p className="text-gray-500 mb-2">{t('EMD Amount')}</p>
+              <p className="text-4xl font-bold text-gray-900">₹{formatNumber(emdAmount)}</p>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3">Select Payment Method</label>
+              <label className="block text-sm font-medium text-gray-700 mb-3">{t('Select Payment Method')}</label>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {paymentMethods.map((method) => {
                   const Icon = method.icon;
@@ -101,19 +103,19 @@ const EMDPayment = () => {
               {isProcessing ? (
                 <>
                   <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  Processing Payment...
+                  {t('Processing Payment...')}
                 </>
               ) : (
                 <>
                   <Lock className="w-5 h-5" />
-                  Pay ₹{emdAmount.toLocaleString()}
+                  {t('Pay ₹{amount}', { amount: formatNumber(emdAmount) })}
                 </>
               )}
             </button>
 
             <p className="text-center text-sm text-gray-500 flex items-center justify-center gap-2">
               <Lock className="w-4 h-4" />
-              Secure payment powered by Razorpay
+              {t('Secure payment powered by Razorpay')}
             </p>
           </>
         ) : (
@@ -121,9 +123,9 @@ const EMDPayment = () => {
             <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <CheckCircle className="w-10 h-10 text-green-600" />
             </div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">Payment Successful!</h3>
-            <p className="text-gray-600">Your EMD of ₹{emdAmount.toLocaleString()} has been received.</p>
-            <p className="text-sm text-gray-500 mt-2">Redirecting to flat selection...</p>
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">{t('Payment Successful!')}</h3>
+            <p className="text-gray-600">{t('Your EMD of ₹{amount} has been received.', { amount: formatNumber(emdAmount) })}</p>
+            <p className="text-sm text-gray-500 mt-2">{t('Redirecting to flat selection...')}</p>
           </div>
         )}
       </div>

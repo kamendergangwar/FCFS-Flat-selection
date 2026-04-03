@@ -1,29 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { ChevronDown, CircleHelp, Languages, LayoutDashboard, LogOut, Palette } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import { useTheme } from '../context/ThemeContext';
 import HeaderLogoScene from './HeaderLogoScene';
 
 const logoSrc = `${import.meta.env.BASE_URL}maho-logo.png`;
 
-const getPageLabel = (pathname) => {
-  if (pathname === '/login') {
-    return 'Secure login';
-  }
-  if (pathname === '/dashboard') {
-    return 'Application dashboard';
-  }
-  if (pathname.startsWith('/application/')) {
-    return 'Flat booking workflow';
-  }
-  return 'MHDC booking portal';
-};
-
 const GlobalHeader = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { isAuthenticated, user, logout } = useAuth();
+  const { isMarathi, toggleLanguage, t } = useLanguage();
   const { theme, themes, setThemeById } = useTheme();
   const [isAccountOpen, setIsAccountOpen] = useState(false);
   const [isThemeOpen, setIsThemeOpen] = useState(false);
@@ -64,20 +53,21 @@ const GlobalHeader = () => {
           <button
             type="button"
             className="header-button header-button-language"
-            aria-label="Change language"
-            title="Change language"
+            aria-label={isMarathi ? t('Switch to English') : t('Switch to Marathi')}
+            title={isMarathi ? t('Switch to English') : t('Switch to Marathi')}
+            onClick={toggleLanguage}
           >
             <Languages className="h-4 w-4" />
-            <span className="hidden sm:inline">Language</span>
+            <span className="hidden sm:inline">{isMarathi ? 'मराठी' : 'English'}</span>
           </button>
           <button
             type="button"
             className="header-button header-button-help"
-            aria-label="Help"
-            title="Help"
+            aria-label={t('Help')}
+            title={t('Help')}
           >
             <CircleHelp className="h-4 w-4" />
-            <span className="hidden sm:inline">Help</span>
+            <span className="hidden sm:inline">{t('Help')}</span>
           </button>
           {!isAuthenticated && isLoginPage ? (
             <div className="header-account-menu w-full sm:w-auto" ref={accountMenuRef}>
@@ -89,26 +79,26 @@ const GlobalHeader = () => {
                 aria-expanded={isThemeOpen}
               >
                 <Palette className="h-4 w-4" />
-                <span>Change Theme</span>
+                <span>{t('Change Theme')}</span>
                 <ChevronDown className={`h-4 w-4 transition-transform ${isThemeOpen ? 'rotate-180' : ''}`} />
               </button>
               {isThemeOpen ? (
                 <div className="header-account-dropdown" role="menu">
                   <div className="theme-picker">
                     <div className="theme-picker__grid">
-                      {themes.map((t) => (
+                      {themes.map((themeOption) => (
                         <button
-                          key={t.id}
+                          key={themeOption.id}
                           type="button"
-                          onClick={() => setThemeById(t.id)}
-                          className={`theme-picker__option ${theme === t.id ? 'theme-picker__option--active' : ''}`}
+                          onClick={() => setThemeById(themeOption.id)}
+                          className={`theme-picker__option ${theme === themeOption.id ? 'theme-picker__option--active' : ''}`}
                         >
-                          <div className={`theme-picker__swatch theme-picker__swatch--${t.id}`}>
-                            {t.icon}
+                          <div className={`theme-picker__swatch theme-picker__swatch--${themeOption.id}`}>
+                            {themeOption.icon}
                           </div>
                           <div>
-                            <div className="theme-picker__label">{t.label}</div>
-                            <div className="theme-picker__desc">{t.description}</div>
+                            <div className="theme-picker__label">{t(themeOption.label)}</div>
+                            <div className="theme-picker__desc">{t(themeOption.description)}</div>
                           </div>
                         </button>
                       ))}
@@ -130,13 +120,13 @@ const GlobalHeader = () => {
                 aria-haspopup="menu"
                 aria-expanded={isAccountOpen}
               >
-                My Account
+                {t('My Account')}
                 <ChevronDown className={`h-4 w-4 transition-transform ${isAccountOpen ? 'rotate-180' : ''}`} />
               </button>
               {isAccountOpen ? (
                 <div className="header-account-dropdown" role="menu">
                   <div className="header-account-item header-account-item-static">
-                    <span className="header-subtext">{user?.mobile ? `+91 ${user.mobile}` : 'Signed in'}</span>
+                    <span className="header-subtext">{user?.mobile ? `+91 ${user.mobile}` : t('Signed in')}</span>
                   </div>
                   <button
                     type="button"
@@ -148,7 +138,7 @@ const GlobalHeader = () => {
                     role="menuitem"
                   >
                     <LayoutDashboard className="h-4 w-4" />
-                    Dashboard
+                    {t('Dashboard')}
                   </button>
 
                   {/* Theme Picker */}
@@ -161,26 +151,26 @@ const GlobalHeader = () => {
                     aria-expanded={isThemeOpen}
                   >
                     <Palette className="h-4 w-4" />
-                    Change Theme
+                    {t('Change Theme')}
                     <ChevronDown className={`ml-auto h-3.5 w-3.5 transition-transform ${isThemeOpen ? 'rotate-180' : ''}`} />
                   </button>
 
                   {isThemeOpen ? (
                     <div className="theme-picker">
                       <div className="theme-picker__grid">
-                        {themes.map((t) => (
+                        {themes.map((themeOption) => (
                           <button
-                            key={t.id}
+                            key={themeOption.id}
                             type="button"
-                            onClick={() => setThemeById(t.id)}
-                            className={`theme-picker__option ${theme === t.id ? 'theme-picker__option--active' : ''}`}
+                            onClick={() => setThemeById(themeOption.id)}
+                            className={`theme-picker__option ${theme === themeOption.id ? 'theme-picker__option--active' : ''}`}
                           >
-                            <div className={`theme-picker__swatch theme-picker__swatch--${t.id}`}>
-                              {t.icon}
+                            <div className={`theme-picker__swatch theme-picker__swatch--${themeOption.id}`}>
+                              {themeOption.icon}
                             </div>
                             <div>
-                              <div className="theme-picker__label">{t.label}</div>
-                              <div className="theme-picker__desc">{t.description}</div>
+                              <div className="theme-picker__label">{t(themeOption.label)}</div>
+                              <div className="theme-picker__desc">{t(themeOption.description)}</div>
                             </div>
                           </button>
                         ))}
@@ -196,13 +186,13 @@ const GlobalHeader = () => {
                     role="menuitem"
                   >
                     <LogOut className="h-4 w-4" />
-                    Logout
+                    {t('Logout')}
                   </button>
                 </div>
               ) : null}
             </div>
           ) : (
-            <span className="sr-only">Guest header actions</span>
+            <span className="sr-only">{t('Language')}</span>
           )}
         </div>
       </div>

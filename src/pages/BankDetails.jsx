@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import ApplicationLayout from '../components/ApplicationLayout';
 import { Building, AlertCircle } from 'lucide-react';
 
 const BankDetails = () => {
   const navigate = useNavigate();
   const { applicationData, updateApplicationData } = useAuth();
+  const { t } = useLanguage();
   
   const [formData, setFormData] = useState({
     bankName: applicationData.bank?.bankName || '',
@@ -21,17 +23,17 @@ const BankDetails = () => {
   const validateForm = () => {
     const newErrors = {};
     
-    if (!formData.bankName) newErrors.bankName = 'Bank name is required';
+    if (!formData.bankName) newErrors.bankName = t('Bank name is required');
     if (!formData.accountNumber || formData.accountNumber.length < 9) {
-      newErrors.accountNumber = 'Enter a valid account number';
+      newErrors.accountNumber = t('Enter a valid account number');
     }
     if (formData.accountNumber !== formData.confirmAccountNumber) {
-      newErrors.confirmAccountNumber = 'Account numbers do not match';
+      newErrors.confirmAccountNumber = t('Account numbers do not match');
     }
     if (!formData.ifscCode || formData.ifscCode.length !== 11) {
-      newErrors.ifscCode = 'Enter a valid 11-character IFSC code';
+      newErrors.ifscCode = t('Enter a valid 11-character IFSC code');
     }
-    if (!formData.accountHolderName) newErrors.accountHolderName = 'Account holder name is required';
+    if (!formData.accountHolderName) newErrors.accountHolderName = t('Account holder name is required');
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -67,27 +69,27 @@ const BankDetails = () => {
   };
 
   return (
-    <ApplicationLayout stepNumber={2} title="Bank Details" onContinue={handleSubmit}>
+    <ApplicationLayout stepNumber={2} title={t('Bank Details')} onContinue={handleSubmit}>
       <div className="space-y-6">
         <div className="step-info-panel flex items-start gap-3">
           <AlertCircle className="w-5 h-5 text-blue-600 mt-0.5" />
           <div>
-            <p className="font-medium text-blue-800">Bank Account for Refund</p>
-            <p className="text-sm text-blue-700">This account will be used for refund of EMD if applicable.</p>
+            <p className="font-medium text-blue-800">{t('Bank Account for Refund')}</p>
+            <p className="text-sm text-blue-700">{t('This account will be used for refund of EMD if applicable.')}</p>
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Bank Name
+              {t('Bank Name')}
             </label>
             <input
               type="text"
               name="bankName"
               value={formData.bankName}
               onChange={handleChange}
-              placeholder="Enter bank name"
+              placeholder={t('Enter bank name')}
               className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all ${
                 errors.bankName ? 'border-red-500' : 'border-gray-300'
               }`}
@@ -97,28 +99,28 @@ const BankDetails = () => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Branch Name
+              {t('Branch Name')}
             </label>
             <input
               type="text"
               name="branchName"
               value={formData.branchName}
               onChange={handleChange}
-              placeholder="Enter branch name"
+              placeholder={t('Enter branch name')}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
             />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Account Number
+              {t('Account Number')}
             </label>
             <input
               type="text"
               name="accountNumber"
               value={formData.accountNumber}
               onChange={handleChange}
-              placeholder="Enter account number"
+              placeholder={t('Enter account number')}
               className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all ${
                 errors.accountNumber ? 'border-red-500' : 'border-gray-300'
               }`}
@@ -128,14 +130,14 @@ const BankDetails = () => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Confirm Account Number
+              {t('Confirm Account Number')}
             </label>
             <input
               type="text"
               name="confirmAccountNumber"
               value={formData.confirmAccountNumber}
               onChange={handleChange}
-              placeholder="Confirm account number"
+              placeholder={t('Confirm account number')}
               className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all ${
                 errors.confirmAccountNumber ? 'border-red-500' : 'border-gray-300'
               }`}
@@ -145,7 +147,7 @@ const BankDetails = () => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              IFSC Code
+              {t('IFSC Code')}
             </label>
             <input
               type="text"
@@ -162,14 +164,14 @@ const BankDetails = () => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Account Holder Name
+              {t('Account Holder Name')}
             </label>
             <input
               type="text"
               name="accountHolderName"
               value={formData.accountHolderName}
               onChange={handleChange}
-              placeholder="Enter account holder name"
+              placeholder={t('Enter account holder name')}
               className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all ${
                 errors.accountHolderName ? 'border-red-500' : 'border-gray-300'
               }`}

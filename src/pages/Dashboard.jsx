@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import {
   CalendarDays,
   CheckCircle2,
@@ -17,14 +18,15 @@ import {
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const { user, applicationData, logout } = useAuth();
+  const { user, applicationData } = useAuth();
+  const { t, formatDate } = useLanguage();
 
-  const applicantName = applicationData.kyc?.fullName || user?.name || 'New User';
+  const applicantName = applicationData.kyc?.fullName || user?.name || t('New User');
   const profilePhoto = applicationData.documents?.photo?.previewUrl || null;
   const mobile = user?.mobile || '7017425639';
   const applicationId = mobile.slice(-5) || '26539';
   const barcode = `2602${mobile}`;
-  const lastUpdated = new Date().toLocaleDateString('en-GB', {
+  const lastUpdated = formatDate(new Date(), {
     day: '2-digit',
     month: 'short',
     year: 'numeric',
@@ -71,16 +73,16 @@ const Dashboard = () => {
       body: (
         <div className="space-y-3">
           <div className="dashboard-mini-card">
-            <p className="dashboard-mini-label">KYC</p>
-            <p className="dashboard-mini-value">{applicationData.kyc ? 'Completed' : 'Pending'}</p>
+            <p className="dashboard-mini-label">{t('KYC')}</p>
+            <p className="dashboard-mini-value">{applicationData.kyc ? t('Completed') : t('Pending')}</p>
           </div>
           <div className="dashboard-mini-card">
-            <p className="dashboard-mini-label">Bank Details</p>
-            <p className="dashboard-mini-value">{applicationData.bank?.bankName || 'Pending'}</p>
+            <p className="dashboard-mini-label">{t('Bank Details')}</p>
+            <p className="dashboard-mini-value">{applicationData.bank?.bankName || t('Pending')}</p>
           </div>
           <div className="dashboard-mini-card">
             <p className="dashboard-mini-label">PMAY</p>
-            <p className="dashboard-mini-value">{applicationData.pmay?.eligibilityCategory || 'Not checked'}</p>
+            <p className="dashboard-mini-value">{applicationData.pmay?.eligibilityCategory ? t(applicationData.pmay.eligibilityCategory) : t('Not checked')}</p>
           </div>
         </div>
       ),
@@ -100,16 +102,22 @@ const Dashboard = () => {
       body: (
         <div className="space-y-3">
           <div className="dashboard-mini-card">
-            <p className="dashboard-mini-label">Primary Applicant</p>
+            <p className="dashboard-mini-label">{t('Primary Applicant')}</p>
             <p className="dashboard-mini-value">{applicantName}</p>
           </div>
           <div className="dashboard-mini-card">
-            <p className="dashboard-mini-label">Email</p>
-            <p className="dashboard-mini-value">{applicationData.personal?.email || 'your@email.com'}</p>
+            <p className="dashboard-mini-label">{t('Email')}</p>
+            <p className="dashboard-mini-value">{applicationData.personal?.email || t('your@email.com')}</p>
           </div>
           <div className="dashboard-mini-card">
-            <p className="dashboard-mini-label">Category</p>
-            <p className="dashboard-mini-value">{applicationData.category?.category || 'Not selected'}</p>
+            <p className="dashboard-mini-label">{t('Category')}</p>
+            <p className="dashboard-mini-value">{applicationData.category?.category ? t({
+              general: 'General',
+              obc: 'OBC',
+              sc: 'SC',
+              st: 'ST',
+              ews: 'EWS',
+            }[applicationData.category.category] || applicationData.category.category) : t('Not selected')}</p>
           </div>
         </div>
       ),
@@ -129,16 +137,16 @@ const Dashboard = () => {
       body: (
         <div className="space-y-2">
           <div className="mb-3 flex items-center justify-between">
-            <p className="dashboard-mini-label dashboard-mini-label--inline">Uploaded Documents</p>
+            <p className="dashboard-mini-label dashboard-mini-label--inline">{t('Uploaded Documents')}</p>
             <span className="dashboard-inline-status dashboard-stage__status dashboard-stage__status--active">
               {documents.filter(([, done]) => done).length}/{documents.length}
             </span>
           </div>
           {documents.map(([label, done]) => (
             <div key={label} className="dashboard-list-row">
-              <span>{label}</span>
+              <span>{t(label)}</span>
               <span className={`dashboard-list-pill ${done ? 'dashboard-list-pill-complete' : 'dashboard-list-pill-pending'}`}>
-                {done ? 'Done' : 'Pending'}
+                {done ? t('Done') : t('Pending')}
               </span>
             </div>
           ))}
@@ -160,16 +168,16 @@ const Dashboard = () => {
       body: (
         <div className="space-y-3">
           <div className="dashboard-mini-card">
-            <p className="dashboard-mini-label">Preferred Flat</p>
-            <p className="dashboard-mini-value">{applicationData.flatSelected?.id || 'Not selected'}</p>
+            <p className="dashboard-mini-label">{t('Preferred Flat')}</p>
+            <p className="dashboard-mini-value">{applicationData.flatSelected?.id || t('Not selected')}</p>
           </div>
           <div className="dashboard-mini-card">
-            <p className="dashboard-mini-label">Lock Status</p>
-            <p className="dashboard-mini-value">{applicationData.flatLocked ? 'Locked' : 'Awaiting selection'}</p>
+            <p className="dashboard-mini-label">{t('Lock Status')}</p>
+            <p className="dashboard-mini-value">{applicationData.flatLocked ? t('Locked') : t('Awaiting selection')}</p>
           </div>
           <div className="dashboard-mini-card">
-            <p className="dashboard-mini-label">Booking</p>
-            <p className="dashboard-mini-value">{applicationData.bookingConfirmed ? 'Confirmed' : 'Not confirmed'}</p>
+            <p className="dashboard-mini-label">{t('Booking')}</p>
+            <p className="dashboard-mini-value">{applicationData.bookingConfirmed ? t('Confirmed') : t('Not confirmed')}</p>
           </div>
         </div>
       ),
@@ -209,13 +217,13 @@ const Dashboard = () => {
       <section className="dashboard-board">
         <div className="dashboard-board__header">
           <div>
-            <p className="dashboard-board__eyebrow">FCFS Booking Portal</p>
-            <h1 className="dashboard-board__title">Application Dashboard</h1>
-            <p className="dashboard-board__subtitle">Track every verified step, upload status, and booking milestone in one place.</p>
+            <p className="dashboard-board__eyebrow">{t('FCFS Booking Portal')}</p>
+            <h1 className="dashboard-board__title">{t('Application Dashboard')}</h1>
+            <p className="dashboard-board__subtitle">{t('Track every verified step, upload status, and booking milestone in one place.')}</p>
           </div>
           <div className="dashboard-board__date">
             <CalendarDays className="h-5 w-5" />
-            <span>Last updated:</span>
+            <span>{t('Last updated:')}</span>
             <strong>{lastUpdated}</strong>
           </div>
         </div>
@@ -232,13 +240,13 @@ const Dashboard = () => {
               </div>
               <div>
                 <h2 className="dashboard-profile__name">{applicantName}</h2>
-                <p className="dashboard-profile__meta">Applicant ID: {applicationId}</p>
-                <p className="dashboard-profile__meta">Age: 35 | Mobile: +91 {mobile}</p>
+                <p className="dashboard-profile__meta">{t('Applicant ID: {id}', { id: applicationId })}</p>
+                <p className="dashboard-profile__meta">{t('Age: 35 | Mobile: +91 {mobile}', { mobile })}</p>
               </div>
             </div>
 
             <div className="dashboard-barcode-block dashboard-barcode-block--inline">
-              <p className="dashboard-mini-label">Registration No.</p>
+              <p className="dashboard-mini-label">{t('Registration No.')}</p>
               <div className="dashboard-barcode" />
               <p className="dashboard-barcode__text">{barcode}</p>
             </div>
@@ -250,7 +258,7 @@ const Dashboard = () => {
               onClick={() => navigate(activeRoute)}
               className="dashboard-fee-button"
             >
-              {nextStep}
+              {t(nextStep)}
               <ArrowRight className="h-4 w-4" />
             </button>
           </div>
@@ -263,7 +271,7 @@ const Dashboard = () => {
                 <div className="dashboard-stage__head">
                   <div className="dashboard-stage__number">{stage.id}</div>
                   <span className={`dashboard-stage__status dashboard-stage__head-status dashboard-stage__status--${stage.chipTone}`}>
-                    {stage.status}
+                    {t(stage.status)}
                   </span>
                 </div>
 
@@ -272,7 +280,7 @@ const Dashboard = () => {
                   onClick={() => navigate(stage.route)}
                   className="dashboard-stage__title"
                 >
-                  {stage.title}
+                  {t(stage.title)}
                 </button>
 
                 <div className="dashboard-stage__chips">
@@ -293,7 +301,7 @@ const Dashboard = () => {
                       disabled={!isActive}
                       className={`dashboard-stepper__node ${stateClass} ${isActive ? 'dashboard-stepper__node--clickable' : ''}`}
                     >
-                      <span className="dashboard-stepper__label">{item.label}</span>
+                      <span className="dashboard-stepper__label">{t(item.label)}</span>
                     </button>
                   )})}
                 </div>
@@ -306,33 +314,33 @@ const Dashboard = () => {
 
         <div className="dashboard-bottom-grid">
           <section className="dashboard-bottom-card">
-            <p className="dashboard-bottom-card__eyebrow">Alerts</p>
-            <h3 className="dashboard-bottom-card__title">Notifications</h3>
+            <p className="dashboard-bottom-card__eyebrow">{t('Alerts')}</p>
+            <h3 className="dashboard-bottom-card__title">{t('Notifications')}</h3>
             <div className="dashboard-alert dashboard-alert--warning">
-              <p className="dashboard-alert__title">Action required</p>
-              <p className="dashboard-alert__text">Please complete {nextStep} to continue your application.</p>
+              <p className="dashboard-alert__title">{t('Action required')}</p>
+              <p className="dashboard-alert__text">{t('Please complete {step} to continue your application.', { step: t(nextStep) })}</p>
             </div>
           </section>
 
           <section className="dashboard-bottom-card">
-            <p className="dashboard-bottom-card__eyebrow">Snapshot</p>
-            <h3 className="dashboard-bottom-card__title">Application Summary</h3>
+            <p className="dashboard-bottom-card__eyebrow">{t('Snapshot')}</p>
+            <h3 className="dashboard-bottom-card__title">{t('Application Summary')}</h3>
             <div className="dashboard-summary-list">
               <div className="dashboard-summary-list__row">
-                <span>User mobile</span>
+                <span>{t('User mobile')}</span>
                 <strong>+91 {mobile}</strong>
               </div>
               <div className="dashboard-summary-list__row">
-                <span>Current step</span>
-                <strong>{nextStep}</strong>
+                <span>{t('Current step')}</span>
+                <strong>{t(nextStep)}</strong>
               </div>
               <div className="dashboard-summary-list__row">
-                <span>Flat selected</span>
-                <strong>{applicationData.flatSelected ? 'Yes' : 'No'}</strong>
+                <span>{t('Flat selected')}</span>
+                <strong>{applicationData.flatSelected ? t('Yes') : t('No')}</strong>
               </div>
               <div className="dashboard-summary-list__row">
-                <span>Booking confirmed</span>
-                <strong>{applicationData.bookingConfirmed ? 'Yes' : 'No'}</strong>
+                <span>{t('Booking confirmed')}</span>
+                <strong>{applicationData.bookingConfirmed ? t('Yes') : t('No')}</strong>
               </div>
             </div>
           </section>

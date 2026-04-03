@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import ApplicationLayout from '../components/ApplicationLayout';
 import { CheckCircle, AlertCircle } from 'lucide-react';
 
 const Category = () => {
   const navigate = useNavigate();
   const { applicationData, updateApplicationData } = useAuth();
+  const { t } = useLanguage();
   
   const [formData, setFormData] = useState({
     category: applicationData.category?.category || '',
@@ -17,7 +19,7 @@ const Category = () => {
 
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.category) newErrors.category = 'Please select a category';
+    if (!formData.category) newErrors.category = t('Please select a category');
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -39,18 +41,18 @@ const Category = () => {
   ];
 
   return (
-    <ApplicationLayout stepNumber={6} title="Category Selection" onContinue={handleSubmit}>
+    <ApplicationLayout stepNumber={6} title={t('Category Selection')} onContinue={handleSubmit}>
       <div className="space-y-6">
         <div className="step-info-panel flex items-start gap-3">
           <AlertCircle className="w-5 h-5 text-blue-600 mt-0.5" />
           <div>
-            <p className="font-medium text-blue-800">Category Reservation</p>
-            <p className="text-sm text-blue-700">Select your category as per your caste certificate. This will determine your quota.</p>
+            <p className="font-medium text-blue-800">{t('Category Reservation')}</p>
+            <p className="text-sm text-blue-700">{t('Select your category as per your caste certificate. This will determine your quota.')}</p>
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-3">Select Category</label>
+          <label className="block text-sm font-medium text-gray-700 mb-3">{t('Select Category')}</label>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {categories.map((cat) => (
               <label
@@ -78,8 +80,8 @@ const Category = () => {
                     )}
                   </div>
                   <div>
-                    <p className="font-semibold text-gray-900">{cat.name}</p>
-                    <p className="text-sm text-gray-500">{cat.description}</p>
+                    <p className="font-semibold text-gray-900">{t(cat.name)}</p>
+                    <p className="text-sm text-gray-500">{t(cat.description)}</p>
                   </div>
                 </div>
               </label>
@@ -97,7 +99,7 @@ const Category = () => {
                 onChange={(e) => setFormData(prev => ({ ...prev, casteCertificate: e.target.checked }))}
                 className="w-5 h-5 text-indigo-600 rounded"
               />
-              <span className="text-gray-700">I have a valid caste certificate</span>
+              <span className="text-gray-700">{t('I have a valid caste certificate')}</span>
             </label>
           </div>
         )}
@@ -111,7 +113,7 @@ const Category = () => {
                 onChange={(e) => setFormData(prev => ({ ...prev, incomeCertificate: e.target.checked }))}
                 className="w-5 h-5 text-indigo-600 rounded"
               />
-              <span className="text-gray-700">I have a valid income certificate (income below ₹8 Lakhs)</span>
+              <span className="text-gray-700">{t('I have a valid income certificate (income below ₹8 Lakhs)')}</span>
             </label>
           </div>
         )}

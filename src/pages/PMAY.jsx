@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import ApplicationLayout from '../components/ApplicationLayout';
 import { CheckCircle, XCircle, AlertCircle } from 'lucide-react';
 
@@ -44,6 +45,7 @@ const getEligibilityResult = ({ incomeRange, hasPuccaHouse }) => {
 const PMAY = () => {
   const navigate = useNavigate();
   const { applicationData, updateApplicationData } = useAuth();
+  const { t } = useLanguage();
   
   const [formData, setFormData] = useState({
     incomeRange: applicationData.pmay?.incomeRange || '',
@@ -91,7 +93,7 @@ const PMAY = () => {
   return (
     <ApplicationLayout
       stepNumber={3}
-      title="PMAY Eligibility Check"
+      title={t('PMAY Eligibility Check')}
       onContinue={handleSubmit}
       continueDisabled={!eligibility || !formData.selectedScheme}
     >
@@ -99,14 +101,14 @@ const PMAY = () => {
         <div className="step-info-panel flex items-start gap-3">
           <AlertCircle className="w-5 h-5 text-blue-600 mt-0.5" />
           <div>
-            <p className="font-medium text-blue-800">PMAY Subsidy Scheme</p>
-            <p className="text-sm text-blue-700">Answer the questions below to check whether you qualify for PMAY subsidy.</p>
+            <p className="font-medium text-blue-800">{t('PMAY Subsidy Scheme')}</p>
+            <p className="text-sm text-blue-700">{t('Answer the questions below to check whether you qualify for PMAY subsidy.')}</p>
           </div>
         </div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            What is your monthly household income?
+            {t('What is your monthly household income?')}
           </label>
           <div className="space-y-3">
             <label className="flex items-center gap-2 cursor-pointer">
@@ -118,7 +120,7 @@ const PMAY = () => {
                 onChange={(e) => setFormData(prev => ({ ...prev, incomeRange: e.target.value, selectedScheme: '' }))}
                 className="w-4 h-4 text-indigo-600"
               />
-              <span className="text-gray-700">Below Rs. 25,000</span>
+              <span className="text-gray-700">{t('Below Rs. 25,000')}</span>
             </label>
             <label className="flex items-center gap-2 cursor-pointer">
               <input
@@ -129,7 +131,7 @@ const PMAY = () => {
                 onChange={(e) => setFormData(prev => ({ ...prev, incomeRange: e.target.value, selectedScheme: '' }))}
                 className="w-4 h-4 text-indigo-600"
               />
-              <span className="text-gray-700">Rs. 25,000 to Rs. 50,000</span>
+              <span className="text-gray-700">{t('Rs. 25,000 to Rs. 50,000')}</span>
             </label>
             <label className="flex items-center gap-2 cursor-pointer">
               <input
@@ -140,14 +142,14 @@ const PMAY = () => {
                 onChange={(e) => setFormData(prev => ({ ...prev, incomeRange: e.target.value, selectedScheme: '' }))}
                 className="w-4 h-4 text-indigo-600"
               />
-              <span className="text-gray-700">Above Rs. 50,000</span>
+              <span className="text-gray-700">{t('Above Rs. 50,000')}</span>
             </label>
           </div>
         </div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Do you already own a pucca house?
+            {t('Do you already own a pucca house?')}
           </label>
           <div className="flex gap-4">
             <label className="flex items-center gap-2 cursor-pointer">
@@ -159,7 +161,7 @@ const PMAY = () => {
                 onChange={(e) => setFormData(prev => ({ ...prev, hasPuccaHouse: e.target.value, selectedScheme: '' }))}
                 className="w-4 h-4 text-indigo-600"
               />
-              <span className="text-gray-700">Yes</span>
+              <span className="text-gray-700">{t('Yes')}</span>
             </label>
             <label className="flex items-center gap-2 cursor-pointer">
               <input
@@ -170,7 +172,7 @@ const PMAY = () => {
                 onChange={(e) => setFormData(prev => ({ ...prev, hasPuccaHouse: e.target.value, selectedScheme: '' }))}
                 className="w-4 h-4 text-indigo-600"
               />
-              <span className="text-gray-700">No</span>
+              <span className="text-gray-700">{t('No')}</span>
             </label>
           </div>
         </div>
@@ -181,15 +183,15 @@ const PMAY = () => {
           disabled={isChecking || !formData.incomeRange || !formData.hasPuccaHouse}
           className="step-primary-button w-full disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isChecking ? 'Checking Eligibility...' : 'Check Eligibility'}
+          {isChecking ? t('Checking Eligibility...') : t('Check Eligibility')}
         </button>
 
         {eligibility && (
           <div className="rounded-2xl border border-green-200 bg-green-50 p-4 flex items-center gap-3">
             <CheckCircle className="w-6 h-6 text-green-600" />
             <div>
-              <p className="font-medium text-green-800">{eligibility.title}</p>
-              <p className="text-sm text-green-700">{eligibility.description}</p>
+              <p className="font-medium text-green-800">{t(eligibility.title)}</p>
+              <p className="text-sm text-green-700">{t(eligibility.description)}</p>
             </div>
           </div>
         )}
@@ -199,8 +201,8 @@ const PMAY = () => {
             <div className="flex items-center gap-3">
               <XCircle className="w-5 h-5 text-gray-500" />
               <div>
-                <p className="font-medium text-gray-800">Select one option to continue</p>
-                <p className="text-sm text-gray-600">Your next steps will follow the scheme you choose here.</p>
+                <p className="font-medium text-gray-800">{t('Select one option to continue')}</p>
+                <p className="text-sm text-gray-600">{t('Your next steps will follow the scheme you choose here.')}</p>
               </div>
             </div>
             <div className="space-y-3">
@@ -214,7 +216,7 @@ const PMAY = () => {
                     onChange={(e) => setFormData((prev) => ({ ...prev, selectedScheme: e.target.value }))}
                     className="w-4 h-4 text-indigo-600"
                   />
-                  <span className="text-gray-700">Continue with PMAY</span>
+                  <span className="text-gray-700">{t('Continue with PMAY')}</span>
                 </label>
               )}
               {eligibility.options.includes('non-pmay') && (
@@ -227,7 +229,7 @@ const PMAY = () => {
                     onChange={(e) => setFormData((prev) => ({ ...prev, selectedScheme: e.target.value }))}
                     className="w-4 h-4 text-indigo-600"
                   />
-                  <span className="text-gray-700">Continue with Non-PMAY</span>
+                  <span className="text-gray-700">{t('Continue with Non-PMAY')}</span>
                 </label>
               )}
             </div>

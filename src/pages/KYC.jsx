@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import ApplicationLayout from '../components/ApplicationLayout';
 import { FileText, CreditCard, AlertCircle } from 'lucide-react';
 
 const KYC = () => {
   const navigate = useNavigate();
   const { applicationData, updateApplicationData } = useAuth();
+  const { t } = useLanguage();
   
   const [formData, setFormData] = useState({
     panNumber: applicationData.kyc?.panNumber || '',
@@ -20,19 +22,19 @@ const KYC = () => {
     const newErrors = {};
     
     if (!formData.fullName.trim()) {
-      newErrors.fullName = 'Full name is required';
+      newErrors.fullName = t('Full name is required');
     }
     
     if (!formData.panNumber || !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(formData.panNumber.toUpperCase())) {
-      newErrors.panNumber = 'Enter a valid PAN number (e.g., ABCDE1234F)';
+      newErrors.panNumber = t('Enter a valid PAN number (e.g., ABCDE1234F)');
     }
     
     if (!formData.aadhaarNumber || formData.aadhaarNumber.length !== 12) {
-      newErrors.aadhaarNumber = 'Enter a valid 12-digit Aadhaar number';
+      newErrors.aadhaarNumber = t('Enter a valid 12-digit Aadhaar number');
     }
     
     if (!formData.dateOfBirth) {
-      newErrors.dateOfBirth = 'Date of birth is required';
+      newErrors.dateOfBirth = t('Date of birth is required');
     }
 
     setErrors(newErrors);
@@ -69,27 +71,27 @@ const KYC = () => {
   };
 
   return (
-    <ApplicationLayout stepNumber={1} title="KYC Verification" onContinue={handleSubmit}>
+    <ApplicationLayout stepNumber={1} title={t('KYC Verification')} onContinue={handleSubmit}>
       <div className="space-y-6">
         <div className="step-info-panel flex items-start gap-3">
           <AlertCircle className="w-5 h-5 text-blue-600 mt-0.5" />
           <div>
-            <p className="font-medium text-blue-800">Important</p>
-            <p className="text-sm text-blue-700">Please enter your PAN and Aadhaar details as per official documents.</p>
+            <p className="font-medium text-blue-800">{t('Important')}</p>
+            <p className="text-sm text-blue-700">{t('Please enter your PAN and Aadhaar details as per official documents.')}</p>
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Full Name as per PAN
+              {t('Full Name as per PAN')}
             </label>
             <input
               type="text"
               name="fullName"
               value={formData.fullName}
               onChange={handleChange}
-              placeholder="Enter your full name"
+              placeholder={t('Enter your full name')}
               className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all ${
                 errors.fullName ? 'border-red-500' : 'border-gray-300'
               }`}
@@ -99,7 +101,7 @@ const KYC = () => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Date of Birth
+              {t('Date of Birth')}
             </label>
             <input
               type="date"
@@ -115,7 +117,7 @@ const KYC = () => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              PAN Number
+              {t('PAN Number')}
             </label>
             <div className="relative">
               <FileText className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -135,7 +137,7 @@ const KYC = () => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Aadhaar Number
+              {t('Aadhaar Number')}
             </label>
             <div className="relative">
               <CreditCard className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -156,8 +158,7 @@ const KYC = () => {
 
         <div className="step-note mt-6 p-4">
           <p className="text-sm text-gray-600">
-            <strong>Note:</strong> Your KYC details will be verified with the respective government databases. 
-            Please ensure all information is accurate to avoid rejection.
+            <strong>{t('Note:')}</strong> {t('Your KYC details will be verified with the respective government databases. Please ensure all information is accurate to avoid rejection.')}
           </p>
         </div>
       </div>

@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
+import { useLanguage } from './context/LanguageContext';
 import { useTheme } from './context/ThemeContext';
 import AnimatedBackground from './components/AnimatedBackground';
 import GlobalHeader from './components/GlobalHeader';
@@ -25,12 +26,13 @@ import BookingConfirmed from './pages/BookingConfirmed';
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, isAuthReady } = useAuth();
+  const { t } = useLanguage();
 
   if (!isAuthReady) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center px-4">
         <div className="app-card page-enter rounded-3xl px-8 py-6 text-center text-slate-600">
-          Loading your session...
+          {t('Loading your session...')}
         </div>
       </div>
     );

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import { 
   ArrowLeft, 
   ArrowRight, 
@@ -23,7 +24,7 @@ const stepNames = [
   'Flat Selection',
   'Flat Lock',
   'Confirmation Payment',
-  'Booking Confirmed'
+  'Booking Confirmed',
 ];
 
 const ApplicationLayout = ({
@@ -39,6 +40,7 @@ const ApplicationLayout = ({
 }) => {
   const navigate = useNavigate();
   const { applicationData, updateApplicationData } = useAuth();
+  const { t } = useLanguage();
   const [isSaving, setIsSaving] = useState(false);
 
   const currentStep = parseInt(stepNumber);
@@ -90,13 +92,13 @@ const ApplicationLayout = ({
               <ArrowLeft className="w-5 h-5" />
             </button>
             <div className="min-w-0">
-              <p className="step-eyebrow">Application Flow</p>
+              <p className="step-eyebrow">{t('Application Flow')}</p>
               <h1 className="text-xl font-black tracking-tight step-heading sm:text-2xl">{title}</h1>
-              <p className="step-subtle text-sm">Step {currentStep} of {totalSteps}</p>
+              <p className="step-subtle text-sm">{t('Step {current} of {total}', { current: currentStep, total: totalSteps })}</p>
             </div>
           </div>
           <div className="hidden rounded-full step-chip px-4 py-2 text-sm font-semibold lg:block">
-            FCFS Flat Booking
+            {t('FCFS Flat Booking')}
           </div>
         </div>
       </header>
@@ -114,7 +116,7 @@ const ApplicationLayout = ({
                       ? 'step-progress-current'
                       : 'step-progress-idle'
                   }`}
-                  title={name}
+                  title={t(name)}
                 >
                   {index + 1 < currentStep ? (
                     <Check className="w-4 h-4" />
@@ -140,10 +142,10 @@ const ApplicationLayout = ({
           {!hideSectionHeader && (
             <div className="mb-6 flex flex-col gap-2 border-b pb-5 step-divider sm:flex-row sm:items-end sm:justify-between">
               <div className="min-w-0">
-                <p className="step-eyebrow">Section Details</p>
+                <p className="step-eyebrow">{t('Section Details')}</p>
                 <h2 className="text-xl font-black tracking-tight step-heading sm:text-2xl">{title}</h2>
               </div>
-              <p className="text-sm step-subtle sm:text-right">All changes are kept in your session as you continue.</p>
+              <p className="text-sm step-subtle sm:text-right">{t('All changes are kept in your session as you continue.')}</p>
             </div>
           )}
           {children}
@@ -156,7 +158,7 @@ const ApplicationLayout = ({
               className="step-secondary-button w-full sm:w-auto"
             >
               <ArrowLeft className="w-5 h-5" />
-              Back
+              {t('Back')}
             </button>
             <button
               onClick={handleSave}
@@ -164,14 +166,14 @@ const ApplicationLayout = ({
               className="step-secondary-button w-full sm:w-auto"
             >
               <Save className="w-5 h-5" />
-              Save Draft
+              {t('Save Draft')}
             </button>
             <button
               onClick={handleSaveAndContinue}
               disabled={isSaving || continueDisabled}
               className="step-primary-button w-full disabled:cursor-not-allowed disabled:opacity-50 sm:ml-auto sm:w-auto"
             >
-              {isSaving ? 'Saving...' : 'Save & Continue'}
+              {isSaving ? t('Saving...') : t('Save & Continue')}
               <ArrowRight className="w-5 h-5" />
             </button>
           </div>

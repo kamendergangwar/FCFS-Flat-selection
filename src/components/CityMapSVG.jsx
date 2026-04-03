@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useLanguage } from '../context/LanguageContext';
 
 /*
  * Lightweight SVG city map of Nagpur.
@@ -35,6 +36,7 @@ const PROJECT_POSITIONS = {
 
 const CityMapSVG = ({ projects, selectedProjectId, onSelectProject, onHoverProject, isDark }) => {
   const [hovId, setHovId] = useState(null);
+  const { t } = useLanguage();
 
   const bgColor = isDark ? '#0f172a' : '#f1f5f9';
   const roadColor = isDark ? '#1e293b' : '#e2e8f0';
@@ -114,13 +116,13 @@ const CityMapSVG = ({ projects, selectedProjectId, onSelectProject, onHoverProje
         {/* ─── Area labels ─── */}
         {NAGPUR_AREAS.map((a) => (
           <text key={a.name} x={a.x} y={a.y} textAnchor="middle" fontSize="8" fontWeight="600" fill={areaTextColor} letterSpacing=".04em" opacity="0.7">
-            {a.name}
+            {t(a.name)}
           </text>
         ))}
 
         {/* City center label */}
         <text x="350" y="208" textAnchor="middle" fontSize="10" fontWeight="800" fill={isDark ? '#64748b' : '#94a3b8'} letterSpacing=".15em" opacity="0.5">
-          NAGPUR
+          {t('NAGPUR')}
         </text>
 
         {/* ─── Project Markers ─── */}
@@ -179,7 +181,7 @@ const CityMapSVG = ({ projects, selectedProjectId, onSelectProject, onHoverProje
                 fontWeight={isSel ? '800' : '600'}
                 fill={isSel ? 'white' : isDark ? '#e2e8f0' : '#334155'}
               >
-                {project.name.split(' ').slice(0, 2).join(' ')}
+                {t(project.name).split(' ').slice(0, 2).join(' ')}
               </text>
             </g>
           );
@@ -188,7 +190,7 @@ const CityMapSVG = ({ projects, selectedProjectId, onSelectProject, onHoverProje
         {/* Compass rose */}
         <g transform="translate(580, 40)" opacity="0.4">
           <circle cx="0" cy="0" r="16" fill="none" stroke={isDark ? '#475569' : '#94a3b8'} strokeWidth="1" />
-          <text x="0" y="-20" textAnchor="middle" fontSize="8" fontWeight="800" fill={isDark ? '#64748b' : '#94a3b8'}>N</text>
+          <text x="0" y="-20" textAnchor="middle" fontSize="8" fontWeight="800" fill={isDark ? '#64748b' : '#94a3b8'}>{t('N')}</text>
           <line x1="0" y1="-14" x2="0" y2="-6" stroke={isDark ? '#64748b' : '#94a3b8'} strokeWidth="1.5" />
           <polygon points="0,-14 -3,-8 3,-8" fill={isDark ? '#64748b' : '#94a3b8'} />
         </g>
@@ -198,7 +200,7 @@ const CityMapSVG = ({ projects, selectedProjectId, onSelectProject, onHoverProje
           <line x1="0" y1="0" x2="60" y2="0" stroke={isDark ? '#64748b' : '#94a3b8'} strokeWidth="1.5" />
           <line x1="0" y1="-3" x2="0" y2="3" stroke={isDark ? '#64748b' : '#94a3b8'} strokeWidth="1" />
           <line x1="60" y1="-3" x2="60" y2="3" stroke={isDark ? '#64748b' : '#94a3b8'} strokeWidth="1" />
-          <text x="30" y="-5" textAnchor="middle" fontSize="6" fill={isDark ? '#64748b' : '#94a3b8'} fontWeight="600">~5 km</text>
+          <text x="30" y="-5" textAnchor="middle" fontSize="6" fill={isDark ? '#64748b' : '#94a3b8'} fontWeight="600">{t('~5 km')}</text>
         </g>
       </svg>
     </div>

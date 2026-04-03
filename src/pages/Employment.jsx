@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import ApplicationLayout from '../components/ApplicationLayout';
 import { Briefcase, DollarSign } from 'lucide-react';
 
 const Employment = () => {
   const navigate = useNavigate();
   const { applicationData, updateApplicationData } = useAuth();
+  const { t } = useLanguage();
   
   const [formData, setFormData] = useState({
     employmentType: applicationData.employment?.employmentType || '',
@@ -19,8 +21,8 @@ const Employment = () => {
 
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.employmentType) newErrors.employmentType = 'Employment type is required';
-    if (!formData.monthlyIncome) newErrors.monthlyIncome = 'Monthly income is required';
+    if (!formData.employmentType) newErrors.employmentType = t('Employment type is required');
+    if (!formData.monthlyIncome) newErrors.monthlyIncome = t('Monthly income is required');
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -46,10 +48,10 @@ const Employment = () => {
   };
 
   return (
-    <ApplicationLayout stepNumber={5} title="Employment Details" onContinue={handleSubmit}>
+    <ApplicationLayout stepNumber={5} title={t('Employment Details')} onContinue={handleSubmit}>
       <div className="space-y-6">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Employment Type</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">{t('Employment Type')}</label>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {['Salaried', 'Self Employed', 'Business', 'Retired'].map((type) => (
               <label
@@ -69,7 +71,7 @@ const Employment = () => {
                   className="sr-only"
                 />
                 <Briefcase className="w-6 h-6 mx-auto mb-2 text-gray-400" />
-                <span className="text-sm font-medium text-gray-700">{type}</span>
+                <span className="text-sm font-medium text-gray-700">{t(type)}</span>
               </label>
             ))}
           </div>
@@ -79,24 +81,24 @@ const Employment = () => {
         {formData.employmentType === 'Salaried' && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Employer Name</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t('Employer Name')}</label>
               <input
                 type="text"
                 name="employerName"
                 value={formData.employerName}
                 onChange={handleChange}
-                placeholder="Company name"
+                placeholder={t('Company name')}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Designation</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t('Designation')}</label>
               <input
                 type="text"
                 name="occupation"
                 value={formData.occupation}
                 onChange={handleChange}
-                placeholder="Your designation"
+                placeholder={t('Your designation')}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
               />
             </div>
@@ -106,24 +108,24 @@ const Employment = () => {
         {formData.employmentType === 'Self Employed' && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Business Name</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t('Business Name')}</label>
               <input
                 type="text"
                 name="employerName"
                 value={formData.employerName}
                 onChange={handleChange}
-                placeholder="Business name"
+                placeholder={t('Business name')}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Nature of Business</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t('Nature of Business')}</label>
               <input
                 type="text"
                 name="occupation"
                 value={formData.occupation}
                 onChange={handleChange}
-                placeholder="Business type"
+                placeholder={t('Business type')}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
               />
             </div>
@@ -131,7 +133,7 @@ const Employment = () => {
         )}
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Monthly Income (₹)</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">{t('Monthly Income (₹)')}</label>
           <div className="relative">
             <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
             <input
@@ -139,7 +141,7 @@ const Employment = () => {
               name="monthlyIncome"
               value={formData.monthlyIncome}
               onChange={handleChange}
-              placeholder="Enter monthly income"
+              placeholder={t('Enter monthly income')}
               className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all ${
                 errors.monthlyIncome ? 'border-red-500' : 'border-gray-300'
               }`}
@@ -149,19 +151,19 @@ const Employment = () => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Work Experience (Years)</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">{t('Work Experience (Years)')}</label>
           <select
             name="workExperience"
             value={formData.workExperience}
             onChange={handleChange}
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
           >
-            <option value="">Select Experience</option>
-            <option value="0-1">0-1 Years</option>
-            <option value="1-3">1-3 Years</option>
-            <option value="3-5">3-5 Years</option>
-            <option value="5-10">5-10 Years</option>
-            <option value="10+">10+ Years</option>
+            <option value="">{t('Select Experience')}</option>
+            <option value="0-1">{t('0-1 Years')}</option>
+            <option value="1-3">{t('1-3 Years')}</option>
+            <option value="3-5">{t('3-5 Years')}</option>
+            <option value="5-10">{t('5-10 Years')}</option>
+            <option value="10+">{t('10+ Years')}</option>
           </select>
         </div>
       </div>

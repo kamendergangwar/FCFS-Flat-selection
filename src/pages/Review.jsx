@@ -1,12 +1,43 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import ApplicationLayout from '../components/ApplicationLayout';
 import { CheckCircle, FileText, CreditCard, User, Briefcase, FolderOpen } from 'lucide-react';
 
 const Review = () => {
   const navigate = useNavigate();
   const { applicationData } = useAuth();
+  const { t, formatDate, formatNumber } = useLanguage();
   const profilePhoto = applicationData.documents?.photo?.previewUrl || null;
+  const fieldLabels = {
+    fullName: 'Full Name as per PAN',
+    panNumber: 'PAN Number',
+    aadhaarNumber: 'Aadhaar Number',
+    dateOfBirth: 'Date of Birth',
+    bankName: 'Bank Name',
+    branchName: 'Branch Name',
+    accountNumber: 'Account Number',
+    accountHolderName: 'Account Holder Name',
+    incomeRange: 'What is your monthly household income?',
+    hasPuccaHouse: 'Do you already own a pucca house?',
+    selectedScheme: 'PMAY Eligibility',
+    eligibilityCategory: 'Category',
+    gender: 'Gender',
+    maritalStatus: 'Marital Status',
+    email: 'Email',
+    address: 'Address',
+    city: 'City',
+    state: 'State',
+    pincode: 'Pincode',
+    employmentType: 'Employment Type',
+    employerName: 'Employer Name',
+    monthlyIncome: 'Monthly Income (₹)',
+    category: 'Category',
+    hasCoApplicant: 'Co-Applicant',
+    name: 'Co-Applicant Name',
+    relationship: 'Relationship',
+    uploadedAt: 'Uploaded At',
+  };
 
   const sections = [
     {
@@ -64,20 +95,20 @@ const Review = () => {
   };
 
   return (
-    <ApplicationLayout stepNumber={9} title="Review & Submit" onContinue={handleSubmit}>
+    <ApplicationLayout stepNumber={9} title={t('Review & Submit')} onContinue={handleSubmit}>
       <div className="space-y-6">
         <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4">
-          <p className="text-amber-800 font-medium">Please review all details before submitting</p>
-          <p className="text-sm text-amber-700">Once submitted, you cannot make changes. Contact support for corrections.</p>
+          <p className="text-amber-800 font-medium">{t('Please review all details before submitting')}</p>
+          <p className="text-sm text-amber-700">{t('Once submitted, you cannot make changes. Contact support for corrections.')}</p>
         </div>
 
         <div className="space-y-4">
           {profilePhoto && (
             <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white p-4">
-              <p className="mb-3 text-sm font-semibold text-gray-900">Applicant Photo</p>
+              <p className="mb-3 text-sm font-semibold text-gray-900">{t('Applicant Photo')}</p>
               <img
                 src={profilePhoto}
-                alt="Applicant passport photograph"
+                alt={t('Applicant passport photograph')}
                 className="h-28 w-28 rounded-2xl object-cover border border-gray-200"
               />
             </div>
@@ -91,14 +122,14 @@ const Review = () => {
                 <div className={`flex flex-col gap-2 p-4 sm:flex-row sm:items-center sm:justify-between ${isComplete ? 'bg-green-50' : 'bg-gray-50'}`}>
                   <div className="flex min-w-0 items-center gap-3">
                     <Icon className={`w-5 h-5 ${isComplete ? 'text-green-600' : 'text-gray-400'}`} />
-                    <span className="font-medium text-gray-900">{section.title}</span>
+                    <span className="font-medium text-gray-900">{t(section.title)}</span>
                   </div>
                   {isComplete ? (
                     <span className="text-green-600 text-sm flex items-center gap-1 sm:self-auto">
-                      <CheckCircle className="w-4 h-4" /> Completed
+                      <CheckCircle className="w-4 h-4" /> {t('Completed')}
                     </span>
                   ) : (
-                    <span className="text-gray-500 text-sm">Pending</span>
+                    <span className="text-gray-500 text-sm">{t('Pending')}</span>
                   )}
                 </div>
                 
@@ -109,34 +140,34 @@ const Review = () => {
                         let value = section.data[field];
                         if (!value) return null;
                         if (field === 'uploadedAt') {
-                          value = new Date(value).toLocaleDateString();
+                          value = formatDate(value);
                         }
                         if (field === 'monthlyIncome') {
-                          value = `₹${Number(value).toLocaleString()}`;
+                          value = `₹${formatNumber(Number(value))}`;
                         }
                         if (field === 'annualIncome') {
-                          value = `₹${Number(value).toLocaleString()}`;
+                          value = `₹${formatNumber(Number(value))}`;
                         }
                         if (field === 'incomeRange') {
                           value = {
-                            'below-25000': 'Below Rs. 25,000',
-                            '25000-50000': 'Rs. 25,000 to Rs. 50,000',
-                            'above-50000': 'Above Rs. 50,000',
+                            'below-25000': t('Below Rs. 25,000'),
+                            '25000-50000': t('Rs. 25,000 to Rs. 50,000'),
+                            'above-50000': t('Above Rs. 50,000'),
                           }[value] || value;
                         }
                         if (field === 'hasPuccaHouse') {
-                          value = value === 'yes' ? 'Yes' : 'No';
+                          value = value === 'yes' ? t('Yes') : t('No');
                         }
                         if (field === 'selectedScheme') {
-                          value = value === 'pmay' ? 'PMAY' : 'Non-PMAY';
+                          value = value === 'pmay' ? 'PMAY' : t('Non-PMAY');
                         }
                         if (field === 'hasCoApplicant') {
-                          value = value ? 'Yes' : 'No';
+                          value = value ? t('Yes') : t('No');
                         }
                         return (
                           <div key={field}>
-                            <p className="text-xs text-gray-500 uppercase">{field.replace(/([A-Z])/g, ' $1').trim()}</p>
-                            <p className="text-sm font-medium text-gray-900">{value}</p>
+                            <p className="text-xs text-gray-500 uppercase">{t(fieldLabels[field] || field.replace(/([A-Z])/g, ' $1').trim())}</p>
+                            <p className="text-sm font-medium text-gray-900">{typeof value === 'string' ? t(value) : value}</p>
                           </div>
                         );
                       })}
@@ -152,8 +183,7 @@ const Review = () => {
           <label className="flex cursor-pointer items-start gap-3">
             <input type="checkbox" className="w-5 h-5 text-indigo-600 rounded mt-0.5" />
             <span className="text-sm text-gray-700">
-              I declare that all the information provided by me is true and accurate. 
-              I have read and understood the terms and conditions of the FCFS Flat Booking Scheme.
+              {t('I declare that all the information provided by me is true and accurate. I have read and understood the terms and conditions of the FCFS Flat Booking Scheme.')}
             </span>
           </label>
         </div>

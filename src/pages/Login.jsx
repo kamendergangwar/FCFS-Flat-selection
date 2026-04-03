@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import { Phone, ArrowRight, Loader2, MapPin, Home, BedDouble } from 'lucide-react';
 
 const logoSrc = `${import.meta.env.BASE_URL}maho-logo.png`;
@@ -13,6 +14,7 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
   const { login } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
 
   const slides = [
@@ -108,7 +110,7 @@ const Login = () => {
     setError('');
     
     if (!mobile || mobile.length !== 10) {
-      setError('Please enter a valid 10-digit mobile number');
+      setError(t('Please enter a valid 10-digit mobile number'));
       return;
     }
 
@@ -125,7 +127,7 @@ const Login = () => {
     setError('');
 
     if (!otp || otp.length !== 6) {
-      setError('Please enter the 6-digit OTP');
+      setError(t('Please enter the 6-digit OTP'));
       return;
     }
 
@@ -135,7 +137,7 @@ const Login = () => {
       setIsLoading(false);
       login({
         mobile,
-        name: 'New User',
+        name: t('New User'),
         createdAt: new Date().toISOString(),
       });
       navigate('/dashboard');
@@ -147,7 +149,7 @@ const Login = () => {
     setIsLoading(true);
     setTimeout(() => {
       setIsLoading(false);
-      setError('OTP resent successfully!');
+      setError(t('OTP resent successfully!'));
     }, 1000);
   };
 
@@ -155,10 +157,10 @@ const Login = () => {
     <div className="content-frame page-enter mx-auto flex min-h-[calc(100vh-7rem)] max-w-6xl items-center justify-center p-3 sm:p-4">
       <div className="grid w-full gap-4 sm:gap-6 lg:grid-cols-[1.05fr_0.95fr]">
         <section className="login-side-panel hidden rounded-[2rem] p-6 xl:block xl:p-8">
-          <p className="step-eyebrow">Priority Access</p>
-          <h1 className="text-3xl font-black tracking-tight step-heading">Explore homes and complete your booking in one guided flow.</h1>
+          <p className="step-eyebrow">{t('Priority Access')}</p>
+          <h1 className="text-3xl font-black tracking-tight step-heading">{t('Explore homes and complete your booking in one guided flow.')}</h1>
           <p className="mt-4 max-w-xl text-base leading-7 step-subtle">
-            Browse featured residences, complete verification, and move from shortlist to booking confirmation from one connected dashboard.
+            {t('Browse featured residences, complete verification, and move from shortlist to booking confirmation from one connected dashboard.')}
           </p>
 
           <div className="login-carousel mt-8">
@@ -176,9 +178,9 @@ const Login = () => {
                   <div className="login-carousel__content">
                     <div className="login-carousel__pill">
                       <Home className="h-4 w-4" />
-                      Featured Residence
+                      {t('Featured Residence')}
                     </div>
-                    <h2 className="login-carousel__title">{slide.title}</h2>
+                    <h2 className="login-carousel__title">{t(slide.title)}</h2>
                     <div className="login-carousel__meta">
                       <span>
                         <MapPin className="h-4 w-4" />
@@ -186,10 +188,10 @@ const Login = () => {
                       </span>
                       <span>
                         <BedDouble className="h-4 w-4" />
-                        Ready to explore
+                        {t('Ready to explore')}
                       </span>
                     </div>
-                    <p className="login-carousel__description">{slide.meta}</p>
+                    <p className="login-carousel__description">{t(slide.meta)}</p>
                   </div>
                 </article>
               ))}
@@ -203,7 +205,7 @@ const Login = () => {
                     type="button"
                     onClick={() => setActiveSlide(index)}
                     className={`login-carousel__dot ${index === activeSlide ? 'login-carousel__dot--active' : ''}`}
-                    aria-label={`Show ${slide.title}`}
+                    aria-label={t('Show {title}', { title: t(slide.title) })}
                   />
                 ))}
               </div>
@@ -216,20 +218,20 @@ const Login = () => {
           <div className="mb-6 text-center sm:mb-8">
             <img src={logoSrc} alt="MHDC logo" className="login-brand-logo mx-auto mb-4" />
             <p className="mt-2 text-slate-500">
-              {step === 'mobile' ? 'Enter your mobile number to continue' : 'Enter the OTP sent to your mobile'}
+              {step === 'mobile' ? t('Enter your mobile number to continue') : t('Enter the OTP sent to your mobile')}
             </p>
           </div>
 
           {step === 'mobile' ? (
             <form onSubmit={handleSendOTP} className="space-y-6">
               <div className="step-note">
-                <p className="text-sm font-semibold text-slate-900">Use your registered mobile number</p>
-                <p className="mt-1 text-sm text-slate-500">We will send a 6-digit code to verify your access.</p>
+                <p className="text-sm font-semibold text-slate-900">{t('Use your registered mobile number')}</p>
+                <p className="mt-1 text-sm text-slate-500">{t('We will send a 6-digit code to verify your access.')}</p>
               </div>
 
               <div>
                 <label className="mb-2 block text-sm font-medium text-gray-700">
-                  Mobile Number
+                  {t('Mobile Number')}
                 </label>
                 <div className="relative">
                   <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -237,7 +239,7 @@ const Login = () => {
                     type="tel"
                     value={mobile}
                     onChange={(e) => setMobile(e.target.value.replace(/\D/g, '').slice(0, 10))}
-                    placeholder="Enter 10-digit mobile number"
+                    placeholder={t('Enter 10-digit mobile number')}
                     className="w-full rounded-2xl border border-gray-300 py-4 pl-10 pr-4 transition-all"
                   />
                 </div>
@@ -253,11 +255,11 @@ const Login = () => {
                 {isLoading ? (
                   <>
                     <Loader2 className="w-5 h-5 animate-spin" />
-                    Sending OTP...
+                    {t('Sending OTP...')}
                   </>
                 ) : (
                   <>
-                    Send OTP
+                    {t('Send OTP')}
                     <ArrowRight className="w-5 h-5" />
                   </>
                 )}
@@ -266,24 +268,24 @@ const Login = () => {
           ) : (
             <form onSubmit={handleVerifyOTP} className="space-y-6">
               <div className="step-note">
-                <p className="text-sm font-semibold text-slate-900">Verification in progress</p>
-                <p className="mt-1 text-sm text-slate-500">A verification code was sent to +91 {mobile}. Enter it below to continue.</p>
+                <p className="text-sm font-semibold text-slate-900">{t('Verification in progress')}</p>
+                <p className="mt-1 text-sm text-slate-500">{t('A verification code was sent to +91 {mobile}. Enter it below to continue.', { mobile })}</p>
               </div>
 
               <div>
                 <label className="mb-2 block text-sm font-medium text-gray-700">
-                  Enter OTP
+                  {t('Enter OTP')}
                 </label>
                 <input
                   type="text"
                   value={otp}
                   onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                  placeholder="6-digit OTP"
+                  placeholder={t('6-digit OTP')}
                   className="w-full rounded-2xl border border-gray-300 px-3 py-4 text-center text-xl tracking-[0.28em] transition-all sm:px-4 sm:text-2xl sm:tracking-[0.45em]"
                   autoFocus
                 />
                 <p className="mt-3 text-center text-sm text-gray-500">
-                  OTP sent to +91 {mobile}
+                  {t('OTP sent to +91 {mobile}', { mobile })}
                 </p>
               </div>
 
@@ -297,11 +299,11 @@ const Login = () => {
                 {isLoading ? (
                   <>
                     <Loader2 className="w-5 h-5 animate-spin" />
-                    Verifying...
+                    {t('Verifying...')}
                   </>
                 ) : (
                   <>
-                    Verify & Login
+                    {t('Verify & Login')}
                     <ArrowRight className="w-5 h-5" />
                   </>
                 )}
@@ -313,21 +315,21 @@ const Login = () => {
                   onClick={handleResendOTP}
                   className="step-secondary-button"
                 >
-                  Didn't receive OTP? Resend
+                  {t("Didn't receive OTP? Resend")}
                 </button>
                 <button
                   type="button"
                   onClick={() => setStep('mobile')}
                   className="step-secondary-button"
                 >
-                  Change mobile number
+                  {t('Change mobile number')}
                 </button>
               </div>
             </form>
           )}
 
           <p className="mt-6 text-center text-sm text-gray-400">
-            By continuing, you agree to our Terms & Conditions
+            {t('By continuing, you agree to our Terms & Conditions')}
           </p>
         </section>
       </div>
