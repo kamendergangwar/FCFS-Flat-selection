@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Phone, ArrowRight, Loader2, MapPin, Home, BedDouble } from 'lucide-react';
 
+const logoSrc = `${import.meta.env.BASE_URL}maho-logo.png`;
+
 const Login = () => {
   const [mobile, setMobile] = useState('');
   const [otp, setOtp] = useState('');
@@ -212,7 +214,7 @@ const Login = () => {
 
         <section className="login-card w-full rounded-[2.25rem] p-8 shadow-[0_32px_90px_rgba(15,23,42,0.16)]">
           <div className="mb-8 text-center">
-            <img src="/maho-logo.png" alt="MHDC logo" className="login-brand-logo mx-auto mb-4" />
+            <img src={logoSrc} alt="MHDC logo" className="login-brand-logo mx-auto mb-4" />
             <p className="mt-2 text-slate-500">
               {step === 'mobile' ? 'Enter your mobile number to continue' : 'Enter the OTP sent to your mobile'}
             </p>

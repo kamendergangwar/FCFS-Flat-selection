@@ -5,6 +5,8 @@ import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import HeaderLogoScene from './HeaderLogoScene';
 
+const logoSrc = `${import.meta.env.BASE_URL}maho-logo.png`;
+
 const getPageLabel = (pathname) => {
   if (pathname === '/login') {
     return 'Secure login';
@@ -47,7 +49,7 @@ const GlobalHeader = () => {
       <div className="flex w-full items-center justify-between gap-4">
         <div className="header-logo-wrap flex items-center px-1 py-1">
           <HeaderLogoScene />
-          <img src="/maho-logo.png" alt="MHDC logo" className="header-logo" />
+          <img src={logoSrc} alt="MHDC logo" className="header-logo" />
         </div>
 
         <div className="header-card flex items-center gap-3 rounded-full px-4 py-3 text-sm">
