@@ -10,7 +10,7 @@ const THEMES = [
 
 const getInitialTheme = () => {
   if (typeof window === 'undefined') {
-    return 'dark';
+    return 'mhdc';
   }
 
   const savedTheme = window.localStorage.getItem('theme');
@@ -18,7 +18,7 @@ const getInitialTheme = () => {
     return savedTheme;
   }
 
-  return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  return 'mhdc';
 };
 
 export const ThemeProvider = ({ children }) => {
