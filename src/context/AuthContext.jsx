@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { getItem, setItem, removeItem } from '../utils/indexedDB';
 
 const AuthContext = createContext(null);
 
@@ -10,55 +11,80 @@ export const useAuth = () => {
   return context;
 };
 
-export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(() => {
-    const savedUser = localStorage.getItem('user');
-    return savedUser ? JSON.parse(savedUser) : null;
-  });
-  const [applicationData, setApplicationData] = useState({
-    currentStep: 0,
-    kyc: null,
-    bank: null,
-    pmay: null,
-    personal: null,
-    employment: null,
-    category: null,
-    coApplicant: null,
-    documents: null,
-    emdPaid: false,
-    flatSelected: null,
-    flatLocked: null,
-    bookingConfirmed: false,
-  });
+const DEFAULT_APP_DATA = {
+  currentStep: 0,
+  kyc: null,
+  bank: null,
+  pmay: null,
+  personal: null,
+  employment: null,
+  category: null,
+  coApplicant: null,
+  documents: null,
+  emdPaid: false,
+  flatSelected: null,
+  flatLocked: null,
+  bookingConfirmed: false,
+};
 
-  const [isAuthenticated, setIsAuthenticated] = useState(() => !!localStorage.getItem('user'));
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [applicationData, setApplicationData] = useState(DEFAULT_APP_DATA);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isAuthReady, setIsAuthReady] = useState(false);
 
+  // Hydrate state from IndexedDB on mount
   useEffect(() => {
-    const savedAppData = localStorage.getItem('applicationData');
-    if (savedAppData) {
-      setApplicationData(JSON.parse(savedAppData));
-    }
-    setIsAuthReady(true);
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const [savedUser, savedAppData] = await Promise.all([
+          getItem('user'),
+          getItem('applicationData'),
+        ]);
+
+        if (cancelled) return;
+
+        if (savedUser) {
+          const parsed = typeof savedUser === 'string' ? JSON.parse(savedUser) : savedUser;
+          setUser(parsed);
+          setIsAuthenticated(true);
+        }
+
+        if (savedAppData) {
+          const parsed = typeof savedAppData === 'string' ? JSON.parse(savedAppData) : savedAppData;
+          setApplicationData((prev) => ({ ...prev, ...parsed }));
+        }
+      } catch (err) {
+        console.warn('[AuthContext] Failed to hydrate from IndexedDB', err);
+      } finally {
+        if (!cancelled) setIsAuthReady(true);
+      }
+    })();
+
+    return () => { cancelled = true; };
   }, []);
 
-  const login = (userData) => {
+  const login = useCallback((userData) => {
     setUser(userData);
     setIsAuthenticated(true);
-    localStorage.setItem('user', JSON.stringify(userData));
-  };
+    setItem('user', JSON.stringify(userData));
+  }, []);
 
-  const logout = () => {
+  const logout = useCallback(() => {
     setUser(null);
     setIsAuthenticated(false);
-    localStorage.removeItem('user');
-  };
+    removeItem('user');
+  }, []);
 
-  const updateApplicationData = (data) => {
-    const newData = { ...applicationData, ...data };
-    setApplicationData(newData);
-    localStorage.setItem('applicationData', JSON.stringify(newData));
-  };
+  const updateApplicationData = useCallback((data) => {
+    setApplicationData((prev) => {
+      const newData = { ...prev, ...data };
+      setItem('applicationData', JSON.stringify(newData));
+      return newData;
+    });
+  }, []);
 
   const getProgress = () => {
     const steps = [

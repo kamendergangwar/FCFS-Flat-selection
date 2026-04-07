@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { getItem, setItem } from '../utils/indexedDB';
 
 const ThemeContext = createContext(null);
 
@@ -8,26 +9,30 @@ const THEMES = [
   { id: 'mhdc', label: 'MHDC Classic', icon: '🏛️', description: 'Maroon & white' },
 ];
 
-const getInitialTheme = () => {
-  if (typeof window === 'undefined') {
-    return 'mhdc';
-  }
-
-  const savedTheme = window.localStorage.getItem('theme');
-  if (THEMES.some((t) => t.id === savedTheme)) {
-    return savedTheme;
-  }
-
-  return 'mhdc';
-};
+const DEFAULT_THEME = 'mhdc';
 
 export const ThemeProvider = ({ children }) => {
-  const [theme, setTheme] = useState(getInitialTheme);
+  const [theme, setTheme] = useState(DEFAULT_THEME);
 
+  // Hydrate from IndexedDB once on mount
+  useEffect(() => {
+    (async () => {
+      try {
+        const savedTheme = await getItem('theme');
+        if (savedTheme && THEMES.some((t) => t.id === savedTheme)) {
+          setTheme(savedTheme);
+        }
+      } catch (err) {
+        console.warn('[ThemeContext] Failed to read theme from IndexedDB', err);
+      }
+    })();
+  }, []);
+
+  // Apply theme to DOM and persist whenever it changes
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
     document.body.dataset.theme = theme;
-    window.localStorage.setItem('theme', theme);
+    setItem('theme', theme);
   }, [theme]);
 
   const toggleTheme = () => {

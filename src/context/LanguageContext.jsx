@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { getItem, setItem } from '../utils/indexedDB';
 
 const LanguageContext = createContext(null);
 
@@ -477,24 +478,28 @@ const interpolate = (message, variables = {}) =>
     message,
   );
 
-const getInitialLanguage = () => {
-  if (typeof window === 'undefined') {
-    return 'en';
-  }
-
-  const savedLanguage = window.localStorage.getItem('language');
-  if (LANGUAGES.some((language) => language.id === savedLanguage)) {
-    return savedLanguage;
-  }
-
-  return 'en';
-};
+const DEFAULT_LANGUAGE = 'en';
 
 export const LanguageProvider = ({ children }) => {
-  const [language, setLanguage] = useState(getInitialLanguage);
+  const [language, setLanguage] = useState(DEFAULT_LANGUAGE);
 
+  // Hydrate from IndexedDB once on mount
   useEffect(() => {
-    window.localStorage.setItem('language', language);
+    (async () => {
+      try {
+        const savedLanguage = await getItem('language');
+        if (savedLanguage && LANGUAGES.some((lang) => lang.id === savedLanguage)) {
+          setLanguage(savedLanguage);
+        }
+      } catch (err) {
+        console.warn('[LanguageContext] Failed to read language from IndexedDB', err);
+      }
+    })();
+  }, []);
+
+  // Persist to IndexedDB and update DOM lang attribute on change
+  useEffect(() => {
+    setItem('language', language);
     document.documentElement.lang = language === 'mr' ? 'mr' : 'en';
   }, [language]);
 
